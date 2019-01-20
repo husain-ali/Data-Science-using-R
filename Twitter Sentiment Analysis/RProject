@@ -32,3 +32,40 @@ access_secret <- ""
 
 connect <- OAuthFactory$new(consumerKey = consumer_key, consumerSecet = consumer_secret, requestURL = request_URL, accessURL = access_URL, authURL = auth_URL)
 connect$handshake(cainfo = system.file('CurlSSL', 'cacert.pem', package = 'RCurl'))
+
+# Input the password from Twitter page that your browser will show
+
+# Then register the OAUTH
+setup_twitter_oauth(consumer_key = consumer_key, consumer_secret = consumer_secret, access_token = access_token, access_secret = access_secret)
+
+# Now you can actually access the tweets using Twitter API
+search_tweets = searchTwitter("usa", n = 1000, since = "2018-01-01", lang = "en")
+
+# Explore the Tweets
+head(search_tweets)
+
+# Then convert tweets into a DataFrame
+df_tweets = twListToDF(search_tweets)
+
+# Explore the Tweets Data Frame 
+head(df_tweets)
+dim(df_tweets)
+
+# NLP work starts here onwards
+# Load the required NLP Libraries
+library(tm)
+library(SnowballC)
+
+# Build Text Corpus (Nothing but a large, structured dataset)
+corp = Corpus(VectorSource(df_tweets$text))
+
+# Explore the Corpus
+corp$content
+
+# This dataset contains a lot of irrelevant stuff like URLs, and it may even content some weird stuff
+# Thus we will cleanse the data
+# Removing URL Refernces
+rURL <- function(x) gsub("http[^[:space:]]*","",x)
+corp <- tm_map
+
+
